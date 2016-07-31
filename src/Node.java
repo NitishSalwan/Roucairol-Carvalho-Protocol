@@ -20,7 +20,7 @@ public class Node {
 	private String csRequesTime;
 	public volatile boolean inCriticalSection = false;
 
-	public volatile int MY_LAST_REQUEST_CLOCK = -1;
+	public volatile int MY_LAST_REQUEST_CLOCK = Integer.MAX_VALUE;
 	private HashMap<Node, Boolean> nodeKeys = null;
 	private List<Message> deferedRequests = null;
 
@@ -71,6 +71,21 @@ public class Node {
 	 * Generates Node Keys for 'jth' Node jth node has keys from j+1 till N
 	 */
 	public void initNodeKeys() {
+		/*
+		if(_id == 0)
+		{
+			nodeKeys.put(neighbors.get(1), true);
+			nodeKeys.put(neighbors.get(2), false);
+		}else if(_id == 1)
+		{
+			nodeKeys.put(neighbors.get(2), true);
+			nodeKeys.put(neighbors.get(0), false);
+		}else
+		{
+			nodeKeys.put(neighbors.get(1), false);
+			nodeKeys.put(neighbors.get(0), true);
+		}
+		*/
 		for (int i = 0; i < neighbors.size(); i++) {
 			if (i == _id) {
 				continue;
@@ -79,6 +94,7 @@ public class Node {
 			else if (i > _id)
 				nodeKeys.put(neighbors.get(i), true);
 		}
+		
 		System.out.println("Node Keys");
 		for (Map.Entry<Node, Boolean> map : nodeKeys.entrySet()) {
 			System.out.println(map.getKey() + " " + map.getValue());
@@ -191,7 +207,7 @@ public class Node {
 			removeKey(node);
 		}
 		clearDeferList();
-		MY_LAST_REQUEST_CLOCK = -1;
+		MY_LAST_REQUEST_CLOCK = Integer.MAX_VALUE;
 	}
 
 	public void removeMessageFromQueue(Message messageToRemove) {

@@ -69,12 +69,25 @@ class RequestHandler implements Runnable {
 	private void processMessage(Message message) throws IOException {
 		if (message.getContent().trim().equals("request")) {
 			Logger.println("Message received as request at " + node.getId() + " from : " + message.getSenderNodeId());
-			if (node.inCriticalSection || node.MY_LAST_REQUEST_CLOCK < message.getTime()) {
+			if (node.inCriticalSection) {
 				System.out.println(node.getId() + " is in critical section. Request will be deffered");
 				node.addDeferRequest(message);
-			} else if (node.MY_LAST_REQUEST_CLOCK > message.getTime()) {
+			}
+			else if (node.MY_LAST_REQUEST_CLOCK == Integer.MAX_VALUE)
+			{
+				Message temp_message = new Message("returnkey", node.getId(), node.getClock_value());
+				node.sendMessageToServer(node.getNeighbors().get(message.getSenderNodeId()), temp_message);
+				node.removeKey(node.getNeighbors().get(message.getSenderNodeId()));
+				Logger.println("Returned Key to : " + message.getSenderNodeId());
+				
+			}else if(node.MY_LAST_REQUEST_CLOCK < message.getTime())
+			{
+				System.out.println(node.getId() + " has a request with high priority. Request will be deffered");
+				node.addDeferRequest(message);
+			}
+			else if (node.MY_LAST_REQUEST_CLOCK > message.getTime()) {
 				Logger.println("Case 1 at : " + node.getId() + " from  : " + message.getSenderNodeId());
-				Message temp_message = new Message("returnKey", node.getId(), node.getClock_value());
+				Message temp_message = new Message("returnkey", node.getId(), node.getClock_value());
 				node.sendMessageToServer(node.getNeighbors().get(message.getSenderNodeId()), temp_message);
 				node.removeKey(node.getNeighbors().get(message.getSenderNodeId()));
 				Logger.println("Returned Key to : " + message.getSenderNodeId());
@@ -88,7 +101,7 @@ class RequestHandler implements Runnable {
 					Logger.println("Request Defered from : " + message.getSenderNodeId());
 				} else if (node.getId() > message.getSenderNodeId()) {
 
-					Message temp_message = new Message("returnKey", node.getId(), node.getClock_value());
+					Message temp_message = new Message("returnkey", node.getId(), node.getClock_value());
 					node.sendMessageToServer(node.getNeighbors().get(message.getSenderNodeId()), temp_message);
 					node.removeKey(node.getNeighbors().get(message.getSenderNodeId()));
 					Logger.println("Returned Key to : " + message.getSenderNodeId());

@@ -26,9 +26,12 @@ public class Client {
 			parentNode.checkAndExecuteCriticalSection();
 			
 			List<Node> keysWanted = parentNode.getNodesWithoutKeys();
-			for (Node node : keysWanted) {
-				Message message = new Message("request", parentNode.getId(), parentNode.getClock_value());
-				sendMessageToServer(node, message);
+			if(keysWanted!=null)
+			{
+				for (Node node : keysWanted) {
+					Message message = new Message("request", parentNode.getId(), parentNode.getClock_value());
+					sendMessageToServer(node, message);
+				}
 			}
 		}
 	}
