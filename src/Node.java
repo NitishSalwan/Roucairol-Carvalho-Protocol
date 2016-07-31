@@ -180,6 +180,12 @@ public class Node {
 	}
 
 	private void executeCriticalSection() {
+		try {
+			Thread.sleep(MyApplication.criticalSectionTime);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		Logger.println("Critical Section for Node : " + this._id + " executed");
 	}
 

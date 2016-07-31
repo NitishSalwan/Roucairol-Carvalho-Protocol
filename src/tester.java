@@ -6,13 +6,15 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.Stack;
 
 public class tester {
 
 	public static void main(String args[]) throws Exception
 	{
-		Stack<timestamps> stack =new Stack<timestamps>();
+		PriorityQueue<timestamps> queue =new PriorityQueue<timestamps>();
+		Stack<timestamps> stack = new Stack<timestamps>();
 		ArrayList<timestamps> list =new ArrayList<timestamps>();
 		HashMap<String,timestamps> map=new HashMap<String,timestamps>(); 
 		FileInputStream fis_lan = null;
@@ -74,8 +76,21 @@ public class tester {
 		
 		
 		
+		for(Map.Entry<String,timestamps> mapElement : map.entrySet())
+		{
+			System.out.println("Key : " + mapElement.getKey() + " Value_start : " + mapElement.getValue().getStartTime() + " Value_End : " + mapElement.getValue().getEndTime());
+			queue.add(mapElement.getValue());
+		}
+		while(!queue.isEmpty())
+		{
+			timestamps t=queue.poll();
+			System.out.println("start : " + t.getStartTime() + "   Endtime : " + t.getEndTime());
+			list.add(t);
+		}
 		
-		/*
+		
+		System.out.println();
+		
 		for(timestamps t : list)
 		{
 			System.out.println("start : " + t.getStartTime() + "   Endtime : " + t.getEndTime());
@@ -86,21 +101,7 @@ public class tester {
 			System.out.println("start : " + list.get(i).getStartTime() + "   Endtime : " + list.get(i).getEndTime());
 			
 		}
-		*/
 		
-		
-		
-		for(Map.Entry<String,timestamps> mapElement : map.entrySet())
-		{
-			//System.out.println("Key : " + mapElement.getKey() + " Value_start : " + mapElement.getValue().getStartTime() + " Value_End : " + mapElement.getValue().getEndTime());
-			stack.push(mapElement.getValue());
-		}
-		while(!stack.isEmpty())
-		{
-			timestamps t=stack.pop();
-			//System.out.println("start : " + t.getStartTime() + "   Endtime : " + t.getEndTime());
-			list.add(t);
-		}
 		
 		
 		
@@ -159,10 +160,10 @@ class timestamps implements Comparable<timestamps>
 		// TODO Auto-generated method stub
 		if(this.startTime > o.startTime)
 		{
-			return -1;
+			return 1;
 		}
 		else		
-		return 1;
+		return -1;
 	}
 
 	
